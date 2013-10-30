@@ -10,6 +10,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "you must specify a value for name and email, and message";
         exit;
     }
+    
+    //prevents spambots from hijacking this form
+    foreach ( $_POST as $value ){
+        if( stripos($value, 'Content-Type:') !== FALSE ){
+            echo "There was a problem with the information you entered";
+            exit;
+        }
+    }
 
     $email_body = "";
     $email_body = $email_body . "Name: " . $name . "\n";
