@@ -1,9 +1,16 @@
 <?php 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST["name"];
-    $email =  $_POST["email"];
-    $message =  $_POST["message"];
+    $name = trim($_POST["name"]);
+    $email =  trim($_POST["email"]);
+    $message =  trim($_POST["message"]) ;
+    
+    // added form validation
+    if ($name == "" OR $email == "" OR $message == "") {
+        echo "you must specify a value for name and email, and message";
+        exit;
+    }
+
     $email_body = "";
     $email_body = $email_body . "Name: " . $name . "\n";
     $email_body = $email_body . "Email: " . $email . "\n";
