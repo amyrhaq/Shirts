@@ -33,6 +33,8 @@ include('inc/header.php'); ?>
 					if ($total_products - $position < 4) {
 							$list_view_html = $list_view_html . get_list_view_html($product_id,$product);
 						}
+					}
+					echo $list_view_html;
 					?>								
 				</ul>
 
