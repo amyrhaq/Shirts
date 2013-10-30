@@ -31,7 +31,7 @@ include('inc/header.php'); ?>
 					foreach($products as $product_id => $product) {
 					$position = $position + 1;
 					if ($total_products - $position < 4) {
-							$list_view_html = $list_view_html . get_list_view_html($product_id,$product);
+							$list_view_html = get_list_view_html($product_id,$product) . $list_view_html;
 						}
 					}
 					echo $list_view_html;
