@@ -10,21 +10,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "you must specify a value for name and email, and message";
         exit;
     }
-    
-    //prevents spambots from hijacking this form
+
     foreach ( $_POST as $value ){
         if( stripos($value, 'Content-Type:') !== FALSE ){
             echo "There was a problem with the information you entered";
             exit;
         }
     }
+    //this is to trick spambots
+    if ($_POST["address"] != "") {
+        echo "Your form submission has an error.";
+        exit;
+    }
+    require_once("inc/phpmailer/class.phpmailer.php");
+    $mail = new PHPMailer(); // defaults to using php "mail()"
+
+    if (!$mail->ValidateAddress($email)){
+        echo "you must specify a valid email address";
+        exit;
+    }
 
     $email_body = "";
-    $email_body = $email_body . "Name: " . $name . "\n";
-    $email_body = $email_body . "Email: " . $email . "\n";
+    $email_body = $email_body . "Name: " . $name . "<br>";
+    $email_body = $email_body . "Email: " . $email . "<br>";
     $email_body = $email_body . "Message: " . $message;
 
-    // TODO: Send Email
+    $mail->SetFrom($email, $name);
+    $address = "orders@shirts4mike.com";
+    $mail->AddAddress($address, "Shirts 4 Mike");
+    $mail->Subject    = "Shirts 4 Mike Contact Form Submission | " . $name;
+    $mail->MsgHTML($address, "Shirts 4 Mike");
+
+    if(!$mail->Send()) {
+    echo "There was a problem sending the email: " . $mail->ErrorInfo;
+    exit;
+    } 
 
     header("Location: contact.php?status=thanks");
     exit;
@@ -72,7 +92,17 @@ include('inc/header.php'); ?>
                             <td>
                                 <textarea name="message" id="message"></textarea>
                             </td>
-                        </tr>                    
+                        </tr>
+                        <!-- tricking spam robots by using hidden css forms --> 
+                        <tr style="display: none;">
+                            <th>
+                                <label for="address">Address</label>
+                            </th>
+                            <td>
+                                <input type="text" name="address" id="address">
+                                <p>Leave this field blank if you are human</p>
+                            </td>
+                        </tr>                   
                     </table>
                     <input type="submit" value="Send">
 
